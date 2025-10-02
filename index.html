@@ -178,10 +178,25 @@ const App = () => {
   };
 
   const isCompletedToday = (t) => { if (!t.completedDate) return false; const cd = new Date(t.completedDate); cd.setHours(0,0,0,0); return cd.getTime() === getToday().getTime(); };
+  
+  const getTop = (lim) => { 
+    const my = tasks.filter(t => t.owner === 'Me' && (t.status === 'active' || (t.status === 'completed' && isCompletedToday(t)))); 
+    const w = { high: 3, medium: 2, low: 1 }; 
+    return my.sort((a,b) => { 
+      const ud = w[b.urgency] - w[a.urgency]; 
+      if (ud !== 0) return ud; 
+      const da = parseDate(a.dueDate); 
+      const db = parseDate(b.dueDate); 
+      if (!da && !db) return 0; 
+      if (!da) return 1; 
+      if (!db) return -1; 
+      return da - db; 
+    }).slice(0, lim); 
+  };
+  
   const getCompleted = () => tasks.filter(t => t.status === 'completed' && !isCompletedToday(t)).sort((a,b) => new Date(b.completedDate) - new Date(a.completedDate));
   const getBubbleUp = () => { const today = getToday(); return tasks.filter(t => { if (t.status !== 'handed-off' || !t.handoffDate) return false; const days = Math.floor((today - new Date(t.handoffDate)) / 86400000); return days <= 3; }); };
   const getStale = () => { const today = getToday(); return tasks.filter(t => { if (t.status === 'completed') return false; const dd = parseDate(t.dueDate); const fd = parseDate(t.followUpDate); return (dd && Math.floor((today - dd) / 86400000) >= 7) || (fd && Math.floor((today - fd) / 86400000) >= 7); }).sort((a,b) => { const da = parseDate(a.followUpDate || a.dueDate); const db = parseDate(b.followUpDate || b.dueDate); if (!da) return 1; if (!db) return -1; return db - da; }); };
-  const getTop = (lim) => { const my = tasks.filter(t => t.owner === 'Me' && (t.status === 'active' || (t.status === 'completed' && isCompletedToday(t)))); const w = { high: 3, medium: 2, low: 1 }; return my.sort((a,b) => { const ud = w[b.urgency] - w[a.urgency]; if (ud !== 0) return ud; const da = parseDate(a.dueDate); const db = parseDate(b.dueDate); if (!da && !db) return 0; if (!da) return 1; if (!db) return -1; return da - db; }).slice(0, lim); };
   
   const getFilteredTasks = () => {
     let filtered = [];
