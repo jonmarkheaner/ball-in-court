@@ -238,6 +238,7 @@ const App = () => {
     const ic = task.status === 'completed';
     const subtasks = task.subtasks || [];
     const completedSubtasks = subtasks.filter(st => st.completed).length;
+    const isDraggingSubtask = draggedSubtask && draggedSubtask.taskId === task.id;
     
     return (
       <div 
