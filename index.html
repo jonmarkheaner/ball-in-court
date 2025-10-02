@@ -196,7 +196,7 @@ const App = () => {
 
   const Net = () => (<svg width="32" height="32" viewBox="0 0 32 32" fill="none"><rect x="2" y="14" width="28" height="4" fill="currentColor"/><line x1="4" y1="6" x2="4" y2="26" stroke="currentColor" strokeWidth="1.5"/><line x1="8" y1="6" x2="8" y2="26" stroke="currentColor" strokeWidth="1.5"/><line x1="12" y1="6" x2="12" y2="26" stroke="currentColor" strokeWidth="1.5"/><line x1="16" y1="6" x2="16" y2="26" stroke="currentColor" strokeWidth="1.5"/><line x1="20" y1="6" x2="20" y2="26" stroke="currentColor" strokeWidth="1.5"/><line x1="24" y1="6" x2="24" y2="26" stroke="currentColor" strokeWidth="1.5"/><line x1="28" y1="6" x2="28" y2="26" stroke="currentColor" strokeWidth="1.5"/><line x1="2" y1="10" x2="30" y2="10" stroke="currentColor" strokeWidth="1"/><line x1="2" y1="22" x2="30" y2="22" stroke="currentColor" strokeWidth="1"/></svg>);
 
-  const TaskCard = ({ task }) => {
+  const TaskCard = ({ task, subtaskInputs, setSubtaskInputs }) => {
     const uc = { high: 'from-red-500 to-red-600', medium: 'from-amber-500 to-amber-600', low: 'from-emerald-500 to-emerald-600' };
     const ct = isCompletedToday(task);
     const ic = task.status === 'completed';
@@ -209,6 +209,7 @@ const App = () => {
         onDragStart={(e) => handleDragStart(e, task)}
         onDragOver={handleDragOver}
         onDrop={(e) => handleDrop(e, task)}
+        onDoubleClick={() => setFocusedTask(task.id)}
         className={`bg-white rounded-xl shadow-sm hover:shadow-md transition-all p-5 mb-3 border border-gray-100 ${ct ? 'opacity-70' : ''} ${draggedTask?.id === task.id ? 'opacity-50' : ''} cursor-move`}
       >
         <div className="flex items-start gap-3">
