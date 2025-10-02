@@ -232,13 +232,13 @@ const App = () => {
 
   const Net = () => (<svg width="32" height="32" viewBox="0 0 32 32" fill="none"><rect x="2" y="14" width="28" height="4" fill="currentColor"/><line x1="4" y1="6" x2="4" y2="26" stroke="currentColor" strokeWidth="1.5"/><line x1="8" y1="6" x2="8" y2="26" stroke="currentColor" strokeWidth="1.5"/><line x1="12" y1="6" x2="12" y2="26" stroke="currentColor" strokeWidth="1.5"/><line x1="16" y1="6" x2="16" y2="26" stroke="currentColor" strokeWidth="1.5"/><line x1="20" y1="6" x2="20" y2="26" stroke="currentColor" strokeWidth="1.5"/><line x1="24" y1="6" x2="24" y2="26" stroke="currentColor" strokeWidth="1.5"/><line x1="28" y1="6" x2="28" y2="26" stroke="currentColor" strokeWidth="1.5"/><line x1="2" y1="10" x2="30" y2="10" stroke="currentColor" strokeWidth="1"/><line x1="2" y1="22" x2="30" y2="22" stroke="currentColor" strokeWidth="1"/></svg>);
 
-  const TaskCard = ({ task }) => {
+  const TaskCard = ({ task, draggedSubtaskState }) => {
     const uc = { high: 'from-red-500 to-red-600', medium: 'from-amber-500 to-amber-600', low: 'from-emerald-500 to-emerald-600' };
     const ct = isCompletedToday(task);
     const ic = task.status === 'completed';
     const subtasks = task.subtasks || [];
     const completedSubtasks = subtasks.filter(st => st.completed).length;
-    const isDraggingSubtask = draggedSubtask && draggedSubtask.taskId === task.id;
+    const isDraggingSubtask = draggedSubtaskState && draggedSubtaskState.taskId === task.id;
     
     return (
       <div 
@@ -291,7 +291,7 @@ const App = () => {
                       onDragStart={(e) => handleSubtaskDragStart(e, task.id, st)}
                       onDragOver={handleSubtaskDragOver}
                       onDrop={(e) => handleSubtaskDrop(e, task.id, st)}
-                      className={`flex items-center gap-2 p-2 bg-gray-50 rounded-lg cursor-move ${draggedSubtask?.subtask.id === st.id ? 'opacity-50' : ''}`}
+                      className={`flex items-center gap-2 p-2 bg-gray-50 rounded-lg cursor-move ${isDraggingSubtask && draggedSubtaskState.subtask.id === st.id ? 'opacity-50' : ''}`}
                     >
                       <div className="text-gray-400 cursor-grab active:cursor-grabbing">
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="9" cy="5" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="9" cy="19" r="1"/><circle cx="15" cy="5" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="19" r="1"/></svg>
@@ -437,12 +437,12 @@ const App = () => {
         )}
 
         <div className="bg-white rounded-2xl shadow-xl p-6 border min-h-96">
-          {activeView === 'all' && (<><h2 className="text-2xl font-bold mb-6">All Active Tasks</h2>{getFilteredTasks().length === 0 ? (<div className="text-center py-12"><div className="text-gray-300 mb-4 flex justify-center"><Icons.List /></div><p className="text-gray-500 font-medium">No tasks. Add one!</p></div>) : (getFilteredTasks().map(t => <TaskCard key={t.id} task={t} />))}</>)}
-          {activeView === 'top1' && (<><h2 className="text-2xl font-bold mb-6">Top Priority</h2>{getFilteredTasks().length === 0 ? (<div className="text-center py-12"><div className="text-gray-300 mb-4 flex justify-center"><Icons.Flame /></div><p className="text-gray-500 font-medium">No tasks!</p></div>) : (getFilteredTasks().map(t => <TaskCard key={t.id} task={t} />))}</>)}
-          {activeView === 'top5' && (<><h2 className="text-2xl font-bold mb-6">Top 5 Priorities</h2>{getFilteredTasks().length === 0 ? (<div className="text-center py-12"><div className="text-gray-300 mb-4 flex justify-center"><Icons.TrendUp /></div><p className="text-gray-500 font-medium">No tasks!</p></div>) : (getFilteredTasks().map(t => <TaskCard key={t.id} task={t} />))}</>)}
-          {activeView === 'bubble' && (<><h2 className="text-2xl font-bold mb-6">Bubble Up Tasks</h2><p className="text-sm text-gray-600 mb-4 font-medium">Handed off in last 3 days</p>{getFilteredTasks().length === 0 ? (<div className="text-center py-12"><div className="text-gray-300 mb-4 flex justify-center"><Icons.TrendUp /></div><p className="text-gray-500 font-medium">No bubble up tasks</p></div>) : (getFilteredTasks().map(t => <TaskCard key={t.id} task={t} />))}</>)}
-          {activeView === 'stale' && (<><h2 className="text-2xl font-bold mb-6">Stale Tasks</h2><p className="text-sm text-gray-600 mb-4 font-medium">7+ days overdue</p>{getFilteredTasks().length === 0 ? (<div className="text-center py-12"><div className="text-gray-300 mb-4 flex justify-center"><Icons.Alert /></div><p className="text-gray-500 font-medium">No stale tasks</p></div>) : (getFilteredTasks().map(t => <TaskCard key={t.id} task={t} />))}</>)}
-          {activeView === 'completed' && (<><h2 className="text-2xl font-bold mb-6">Completed Tasks</h2><p className="text-sm text-gray-600 mb-4 font-medium">Yesterday or earlier</p>{getFilteredTasks().length === 0 ? (<div className="text-center py-12"><div className="text-gray-300 mb-4 flex justify-center"><Icons.Archive /></div><p className="text-gray-500 font-medium">No completed tasks</p></div>) : (getFilteredTasks().map(t => <TaskCard key={t.id} task={t} />))}</>)}
+          {activeView === 'all' && (<><h2 className="text-2xl font-bold mb-6">All Active Tasks</h2>{getFilteredTasks().length === 0 ? (<div className="text-center py-12"><div className="text-gray-300 mb-4 flex justify-center"><Icons.List /></div><p className="text-gray-500 font-medium">No tasks. Add one!</p></div>) : (getFilteredTasks().map(t => <TaskCard key={t.id} task={t} draggedSubtaskState={draggedSubtask} />))}</>)}
+          {activeView === 'top1' && (<><h2 className="text-2xl font-bold mb-6">Top Priority</h2>{getFilteredTasks().length === 0 ? (<div className="text-center py-12"><div className="text-gray-300 mb-4 flex justify-center"><Icons.Flame /></div><p className="text-gray-500 font-medium">No tasks!</p></div>) : (getFilteredTasks().map(t => <TaskCard key={t.id} task={t} draggedSubtaskState={draggedSubtask} />))}</>)}
+          {activeView === 'top5' && (<><h2 className="text-2xl font-bold mb-6">Top 5 Priorities</h2>{getFilteredTasks().length === 0 ? (<div className="text-center py-12"><div className="text-gray-300 mb-4 flex justify-center"><Icons.TrendUp /></div><p className="text-gray-500 font-medium">No tasks!</p></div>) : (getFilteredTasks().map(t => <TaskCard key={t.id} task={t} draggedSubtaskState={draggedSubtask} />))}</>)}
+          {activeView === 'bubble' && (<><h2 className="text-2xl font-bold mb-6">Bubble Up Tasks</h2><p className="text-sm text-gray-600 mb-4 font-medium">Handed off in last 3 days</p>{getFilteredTasks().length === 0 ? (<div className="text-center py-12"><div className="text-gray-300 mb-4 flex justify-center"><Icons.TrendUp /></div><p className="text-gray-500 font-medium">No bubble up tasks</p></div>) : (getFilteredTasks().map(t => <TaskCard key={t.id} task={t} draggedSubtaskState={draggedSubtask} />))}</>)}
+          {activeView === 'stale' && (<><h2 className="text-2xl font-bold mb-6">Stale Tasks</h2><p className="text-sm text-gray-600 mb-4 font-medium">7+ days overdue</p>{getFilteredTasks().length === 0 ? (<div className="text-center py-12"><div className="text-gray-300 mb-4 flex justify-center"><Icons.Alert /></div><p className="text-gray-500 font-medium">No stale tasks</p></div>) : (getFilteredTasks().map(t => <TaskCard key={t.id} task={t} draggedSubtaskState={draggedSubtask} />))}</>)}
+          {activeView === 'completed' && (<><h2 className="text-2xl font-bold mb-6">Completed Tasks</h2><p className="text-sm text-gray-600 mb-4 font-medium">Yesterday or earlier</p>{getFilteredTasks().length === 0 ? (<div className="text-center py-12"><div className="text-gray-300 mb-4 flex justify-center"><Icons.Archive /></div><p className="text-gray-500 font-medium">No completed tasks</p></div>) : (getFilteredTasks().map(t => <TaskCard key={t.id} task={t} draggedSubtaskState={draggedSubtask} />))}</>)}
         </div>
       </div>
 
