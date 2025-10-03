@@ -218,18 +218,14 @@ const App = () => {
     const subtasks = task.subtasks || [];
     const completedSubtasks = subtasks.filter(st => st.completed).length;
     
-    // Safe defaults if props are undefined
-    const inputs = subtaskInputs || {};
-    const setInputs = setSubtaskInputs || (() => {});
-    
-    const handleSubtaskInputChange = (taskId, value) => {
-      if (setSubtaskInputs) {
-        setSubtaskInputs({ ...inputs, [taskId]: value });
-      }
+    const handleInputChange = (taskId, value) => {
+      const newInputs = Object.assign({}, subtaskInputs);
+      newInputs[taskId] = value;
+      setSubtaskInputs(newInputs);
     };
     
-    const getSubtaskInput = (taskId) => {
-      return inputs[taskId] || '';
+    const getInput = (taskId) => {
+      return subtaskInputs && subtaskInputs[taskId] ? subtaskInputs[taskId] : '';
     };
     
     return (
