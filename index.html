@@ -218,12 +218,18 @@ const App = () => {
     const subtasks = task.subtasks || [];
     const completedSubtasks = subtasks.filter(st => st.completed).length;
     
+    // Safe defaults if props are undefined
+    const inputs = subtaskInputs || {};
+    const setInputs = setSubtaskInputs || (() => {});
+    
     const handleSubtaskInputChange = (taskId, value) => {
-      setSubtaskInputs({ ...subtaskInputs, [taskId]: value });
+      if (setSubtaskInputs) {
+        setSubtaskInputs({ ...inputs, [taskId]: value });
+      }
     };
     
     const getSubtaskInput = (taskId) => {
-      return subtaskInputs[taskId] || '';
+      return inputs[taskId] || '';
     };
     
     return (
@@ -421,12 +427,129 @@ const App = () => {
         )}
 
         <div className="bg-white rounded-2xl shadow-xl p-6 border min-h-96">
-          {activeView === 'all' && (<><h2 className="text-2xl font-bold mb-6">All Active Tasks</h2>{getFilteredTasks().length === 0 ? (<div className="text-center py-12"><div className="text-gray-300 mb-4 flex justify-center"><Icons.List /></div><p className="text-gray-500 font-medium">No tasks. Add one!</p></div>) : (getFilteredTasks().map(t => <TaskCard key={t.id} task={t} subtaskInputs={subtaskInputs} setSubtaskInputs={setSubtaskInputs} />))}</>)}
-          {activeView === 'top1' && (<><h2 className="text-2xl font-bold mb-6">Top Priority</h2>{getFilteredTasks().length === 0 ? (<div className="text-center py-12"><div className="text-gray-300 mb-4 flex justify-center"><Icons.Flame /></div><p className="text-gray-500 font-medium">No tasks!</p></div>) : (getFilteredTasks().map(t => <TaskCard key={t.id} task={t} subtaskInputs={subtaskInputs} setSubtaskInputs={setSubtaskInputs} />))}</>)}
-          {activeView === 'top5' && (<><h2 className="text-2xl font-bold mb-6">Top 5 Priorities</h2>{getFilteredTasks().length === 0 ? (<div className="text-center py-12"><div className="text-gray-300 mb-4 flex justify-center"><Icons.TrendUp /></div><p className="text-gray-500 font-medium">No tasks!</p></div>) : (getFilteredTasks().map(t => <TaskCard key={t.id} task={t} subtaskInputs={subtaskInputs} setSubtaskInputs={setSubtaskInputs} />))}</>)}
-          {activeView === 'bubble' && (<><h2 className="text-2xl font-bold mb-6">Bubble Up Tasks</h2><p className="text-sm text-gray-600 mb-4 font-medium">Handed off in last 3 days</p>{getFilteredTasks().length === 0 ? (<div className="text-center py-12"><div className="text-gray-300 mb-4 flex justify-center"><Icons.TrendUp /></div><p className="text-gray-500 font-medium">No bubble up tasks</p></div>) : (getFilteredTasks().map(t => <TaskCard key={t.id} task={t} subtaskInputs={subtaskInputs} setSubtaskInputs={setSubtaskInputs} />))}</>)}
-          {activeView === 'stale' && (<><h2 className="text-2xl font-bold mb-6">Stale Tasks</h2><p className="text-sm text-gray-600 mb-4 font-medium">7+ days overdue</p>{getFilteredTasks().length === 0 ? (<div className="text-center py-12"><div className="text-gray-300 mb-4 flex justify-center"><Icons.Alert /></div><p className="text-gray-500 font-medium">No stale tasks</p></div>) : (getFilteredTasks().map(t => <TaskCard key={t.id} task={t} subtaskInputs={subtaskInputs} setSubtaskInputs={setSubtaskInputs} />))}</>)}
-          {activeView === 'completed' && (<><h2 className="text-2xl font-bold mb-6">Completed Tasks</h2><p className="text-sm text-gray-600 mb-4 font-medium">Yesterday or earlier</p>{getFilteredTasks().length === 0 ? (<div className="text-center py-12"><div className="text-gray-300 mb-4 flex justify-center"><Icons.Archive /></div><p className="text-gray-500 font-medium">No completed tasks</p></div>) : (getFilteredTasks().map(t => <TaskCard key={t.id} task={t} subtaskInputs={subtaskInputs} setSubtaskInputs={setSubtaskInputs} />))}</>)}
+          {activeView === 'all' && (
+            <>
+              <h2 className="text-2xl font-bold mb-6">All Active Tasks</h2>
+              {getFilteredTasks().length === 0 ? (
+                <div className="text-center py-12">
+                  <div className="text-gray-300 mb-4 flex justify-center"><Icons.List /></div>
+                  <p className="text-gray-500 font-medium">No tasks. Add one!</p>
+                </div>
+              ) : (
+                getFilteredTasks().map(t => (
+                  <TaskCard 
+                    key={t.id} 
+                    task={t} 
+                    subtaskInputs={subtaskInputs} 
+                    setSubtaskInputs={setSubtaskInputs} 
+                  />
+                ))
+              )}
+            </>
+          )}
+          {activeView === 'top1' && (
+            <>
+              <h2 className="text-2xl font-bold mb-6">Top Priority</h2>
+              {getFilteredTasks().length === 0 ? (
+                <div className="text-center py-12">
+                  <div className="text-gray-300 mb-4 flex justify-center"><Icons.Flame /></div>
+                  <p className="text-gray-500 font-medium">No tasks!</p>
+                </div>
+              ) : (
+                getFilteredTasks().map(t => (
+                  <TaskCard 
+                    key={t.id} 
+                    task={t} 
+                    subtaskInputs={subtaskInputs} 
+                    setSubtaskInputs={setSubtaskInputs} 
+                  />
+                ))
+              )}
+            </>
+          )}
+          {activeView === 'top5' && (
+            <>
+              <h2 className="text-2xl font-bold mb-6">Top 5 Priorities</h2>
+              {getFilteredTasks().length === 0 ? (
+                <div className="text-center py-12">
+                  <div className="text-gray-300 mb-4 flex justify-center"><Icons.TrendUp /></div>
+                  <p className="text-gray-500 font-medium">No tasks!</p>
+                </div>
+              ) : (
+                getFilteredTasks().map(t => (
+                  <TaskCard 
+                    key={t.id} 
+                    task={t} 
+                    subtaskInputs={subtaskInputs} 
+                    setSubtaskInputs={setSubtaskInputs} 
+                  />
+                ))
+              )}
+            </>
+          )}
+          {activeView === 'bubble' && (
+            <>
+              <h2 className="text-2xl font-bold mb-6">Bubble Up Tasks</h2>
+              <p className="text-sm text-gray-600 mb-4 font-medium">Handed off in last 3 days</p>
+              {getFilteredTasks().length === 0 ? (
+                <div className="text-center py-12">
+                  <div className="text-gray-300 mb-4 flex justify-center"><Icons.TrendUp /></div>
+                  <p className="text-gray-500 font-medium">No bubble up tasks</p>
+                </div>
+              ) : (
+                getFilteredTasks().map(t => (
+                  <TaskCard 
+                    key={t.id} 
+                    task={t} 
+                    subtaskInputs={subtaskInputs} 
+                    setSubtaskInputs={setSubtaskInputs} 
+                  />
+                ))
+              )}
+            </>
+          )}
+          {activeView === 'stale' && (
+            <>
+              <h2 className="text-2xl font-bold mb-6">Stale Tasks</h2>
+              <p className="text-sm text-gray-600 mb-4 font-medium">7+ days overdue</p>
+              {getFilteredTasks().length === 0 ? (
+                <div className="text-center py-12">
+                  <div className="text-gray-300 mb-4 flex justify-center"><Icons.Alert /></div>
+                  <p className="text-gray-500 font-medium">No stale tasks</p>
+                </div>
+              ) : (
+                getFilteredTasks().map(t => (
+                  <TaskCard 
+                    key={t.id} 
+                    task={t} 
+                    subtaskInputs={subtaskInputs} 
+                    setSubtaskInputs={setSubtaskInputs} 
+                  />
+                ))
+              )}
+            </>
+          )}
+          {activeView === 'completed' && (
+            <>
+              <h2 className="text-2xl font-bold mb-6">Completed Tasks</h2>
+              <p className="text-sm text-gray-600 mb-4 font-medium">Yesterday or earlier</p>
+              {getFilteredTasks().length === 0 ? (
+                <div className="text-center py-12">
+                  <div className="text-gray-300 mb-4 flex justify-center"><Icons.Archive /></div>
+                  <p className="text-gray-500 font-medium">No completed tasks</p>
+                </div>
+              ) : (
+                getFilteredTasks().map(t => (
+                  <TaskCard 
+                    key={t.id} 
+                    task={t} 
+                    subtaskInputs={subtaskInputs} 
+                    setSubtaskInputs={setSubtaskInputs} 
+                  />
+                ))
+              )}
+            </>
+          )}
         </div>
       </div>
 
