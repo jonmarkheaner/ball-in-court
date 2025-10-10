@@ -15,7 +15,7 @@
     <div id="root"></div>
     <script type="text/babel">
 // Ball-in-Court Task Manager
-// Version: 53
+// Version: 52
 // Description: Simplified task management app tracking task ownership
 // Last Updated: 2025-10-03
 
@@ -37,7 +37,7 @@ const App = () => {
     owner: 'Me' 
   });
   const [newContact, setNewContact] = useState({ name: '', email: '' });
-  const [subtaskInput, setSubtaskInput] = useState('');
+  const [subtaskInputs, setSubtaskInputs] = useState({});
 
   // Task management functions
   const addTask = () => {
